@@ -118,24 +118,24 @@
         <p><font face="Georgia, serif" size="2" color="#9CA3AF"><i>Enter your telemetry identification below. All fields are parsed securely.</i></font></p>
         <br>
         
-        <form action="#" method="POST">
+        <form id="enlistmentForm" action="#" method="POST">
             <table border="0" bgcolor="#1d202b" cellpadding="14" width="50%">
                 <tr>
                     <td align="right" width="40%"><font face="Trebuchet MS, sans-serif" size="3"><b>Esports Handle*:</b></font></td>
                     <td>
-                        <input type="text" name="ign" placeholder="e.g., MonarchAlpha" required size="30">
+                        <input type="text" id="esportsHandle" name="ign" placeholder="e.g., MonarchAlpha" required size="30">
                     </td>
                 </tr>
                 <tr>
                     <td align="right"><font face="Trebuchet MS, sans-serif" size="3"><b>Institutional Email*:</b></font></td>
                     <td>
-                        <input type="email" name="email" placeholder="player@university.in" required size="30">
+                        <input type="email" id="institutionalEmail" name="email" placeholder="player@university.in" required size="30">
                     </td>
                 </tr>
                 <tr>
                     <td align="right"><font face="Trebuchet MS, sans-serif" size="3"><b>Target Domain*:</b></font></td>
                     <td>
-                        <select name="game_selection">
+                        <select id="targetDomain" name="game_selection">
                             <option value="Tactical Shooter (5v5)">Tactical Shooter (5v5)</option>
                             <option value="Battle Royale (Mobile Squads)">Battle Royale (Mobile Squads)</option>
                             <option value="Fighting Championship (1v1)">Fighting Championship (1v1)</option>
@@ -145,9 +145,9 @@
                 <tr>
                     <td align="right" valign="top"><font face="Trebuchet MS, sans-serif" size="3"><b>Deployment Node:</b></font></td>
                     <td>
-                        <input type="radio" name="platform" value="PC" checked><font face="Trebuchet MS, sans-serif" size="3"> PC Framework</font><br>
-                        <input type="radio" name="platform" value="Console"><font face="Trebuchet MS, sans-serif" size="3"> Dedicated Console</font><br>
-                        <input type="radio" name="platform" value="Mobile"><font face="Trebuchet MS, sans-serif" size="3"> Handheld Interface</font>
+                        <input type="radio" name="deploymentNode" value="PC Framework" checked><font face="Trebuchet MS, sans-serif" size="3"> PC Framework</font><br>
+                        <input type="radio" name="deploymentNode" value="Dedicated Console"><font face="Trebuchet MS, sans-serif" size="3"> Dedicated Console</font><br>
+                        <input type="radio" name="deploymentNode" value="Handheld Interface"><font face="Trebuchet MS, sans-serif" size="3"> Handheld Interface</font>
                     </td>
                 </tr>
                 <tr>
@@ -163,62 +163,50 @@
     <br><br>
     <hr color="#FFD700" size="3" width="85%">
     <br>
+
     <script>
-  // 1. Listen for the form submission
-  // CHANGE 'enlistmentForm' to the actual ID of your HTML <form> element
-  document.getElementById('enlistmentForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevents the page from reloading
+      document.getElementById('enlistmentForm').addEventListener('submit', function(e) {
+        e.preventDefault(); 
 
-    // 2. Map your form's input values to JavaScript variables
-    // CHANGE these IDs ('esportsHandle', etc.) to match your actual HTML input IDs
-    const esportsHandle = document.getElementById('esportsHandle').value;
-    const email = document.getElementById('institutionalEmail').value;
-    const targetDomain = document.getElementById('targetDomain').value;
-    
-    // Gets the selected radio button value for the Deployment Node
-    const deploymentNode = document.querySelector('input[name="deploymentNode"]:checked')?.value || "Not Selected";
+        const esportsHandle = document.getElementById('esportsHandle').value;
+        const email = document.getElementById('institutionalEmail').value;
+        const targetDomain = document.getElementById('targetDomain').value;
+        const deploymentNode = document.querySelector('input[name="deploymentNode"]:checked')?.value || "Not Selected";
 
-    // 3. Package the data payload to match your Google Sheet script columns
-    const payload = {
-      esportsHandle: esportsHandle,
-      email: email,
-      targetDomain: targetDomain,
-      deploymentNode: deploymentNode
-    };
+        const payload = {
+          esportsHandle: esportsHandle,
+          email: email,
+          targetDomain: targetDomain,
+          deploymentNode: deploymentNode
+        };
 
-    // Optional visual feedback: change button text while transmitting
-    const submitButton = e.target.querySelector('button, input[type="submit"]');
-    if (submitButton) {
-      submitButton.value = "TRANSMITTING...";
-      submitButton.textContent = "TRANSMITTING..."; // Handles both <button> and <input> tags
-    }
+        const submitButton = e.target.querySelector('input[type="submit"]');
+        if (submitButton) {
+          submitButton.value = " TRANSMITTING... ";
+        }
 
-    // 4. Send data to your Google Apps Script Web App URL
-    // REPLACE the URL below with your actual Google Apps Script Deployment URL
-    fetch('https://script.google.com/macros/s/AKfycbzyHhXWkLx0Lz8hJt-9ZMB1y1hVOX3YTqLnLmanjD_HiYAnNZk5cX0MCXwSxbwhLDAp/exec', {
-      method: 'POST',
-      mode: 'no-cors', // Crucial: Keeps GitHub Pages happy by preventing CORS blocks
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(() => {
-      alert('Telemetry safely logged in central database!');
-      
-      // Reset button text and clear the form fields
-      if (submitButton) {
-        submitButton.value = "TRANSMIT ENLISTMENT DATA";
-        submitButton.textContent = "TRANSMIT ENLISTMENT DATA";
-      }
-      e.target.reset(); 
-    })
-    .catch(error => {
-      console.error('Transmission Failure:', error);
-      alert('Transmission failed. Check the browser console for details.');
-    });
-  });
-</script>
+        fetch('https://script.google.com/macros/s/AKfycbzyHhXWkLx0Lz8hJt-9ZMB1y1hVOX3YTqLnLmanjD_HiYAnNZk5cX0MCXwSxbwhLDAp/exec', {
+          method: 'POST',
+          mode: 'no-cors', 
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(() => {
+          alert('Telemetry safely logged in central database!');
+          if (submitButton) {
+            submitButton.value = " TRANSMIT ENLISTMENT DATA ";
+          }
+          e.target.reset(); 
+        })
+        .catch(error => {
+          console.error('Transmission Failure:', error);
+          alert('Transmission failed. Check the browser console for details.');
+        });
+      });
+    </script>
+
     <center>
         <p><font face="Courier New, monospace" size="2" color="#6B7280">© 2026 Campus Gaming Network // Vanguard Division India. Secure Application Stack.</font></p>
     </center>
